@@ -14,7 +14,7 @@ module type S = sig
   val find : 'a t -> key -> 'a option
   val delete : 'a t -> key -> 'a t
   val of_list : (key * 'a) list -> 'a t
-  (* val to_list: 'a t -> (key * 'a) list *)
+  val to_list: 'a t -> (key * 'a) list
 end
 
 module Make(Ord : OrderedType) : S with type key = Ord.t

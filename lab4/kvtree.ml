@@ -14,7 +14,7 @@ module type S = sig
   val find : 'a t -> key -> 'a option
   val delete : 'a t -> key -> 'a t
   val of_list : (key * 'a) list -> 'a t
-  (* val to_list: 'a t -> (key * 'a) list *)
+  val to_list: 'a t -> (key * 'a) list
 end
 
 module Make(Ord : OrderedType) = struct
@@ -64,4 +64,14 @@ module Make(Ord : OrderedType) = struct
 
   let of_list l =
     List.fold_left (fun t (k, v) -> insert t k v) Leaf l
+
+  let to_list t = 
+    let rec to_list' t acc =
+      match t with
+      | Leaf -> acc
+      | Node (k, v, Leaf, Leaf) -> (k, v)::acc
+      | Node (k, v, Leaf, r) -> (k, v)::(to_list' r acc)
+      | Node (k, v, l, Leaf) -> (k, v)::(to_list' l acc)
+      | Node (k, v, l, r) -> (k,v)::(to_list' l (to_list' r acc))
+    in to_list' t []
 end
