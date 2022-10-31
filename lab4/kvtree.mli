@@ -10,9 +10,9 @@ module type S = sig
   type 'a t = Leaf | Node of key * 'a * 'a t * 'a t
   val empty : 'a t
   val is_empty : 'a t -> bool
-  val insert : 'a t -> key -> 'a -> 'a t
-  val find : 'a t -> key -> 'a option
-  val delete : 'a t -> key -> 'a t
+  val insert : key -> 'a -> 'a t -> 'a t
+  val find : key -> 'a t -> 'a option
+  val delete : key -> 'a t -> 'a t
   val of_list : (key * 'a) list -> 'a t
   val to_list: 'a t -> (key * 'a) list
 end
