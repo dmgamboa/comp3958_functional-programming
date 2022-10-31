@@ -14,17 +14,17 @@ module PermutationMap = struct
     (* val map_by_permutation :  int t -> key list -> int t
     Given a list of strings, returns a map with key-value pairs corresponding 
     to the sets of permutations within that list *)
-    let rec map_by_permutation m l =
-        match l with
-        | [] -> m
-        | (x::xs) ->
-            let key = to_sorted_string x in
-            try
-                let num_perms = find key m in 
-                    map_by_permutation (m |> add key (num_perms + 1)) xs
-            with
-            | Not_found -> map_by_permutation (m |> add key 1) xs
-
+    let map_by_permutation m l = 
+        let num_perms key m = 
+        try
+            (find key m) + 1
+        with
+        | Not_found -> 1
+        in List.fold_left (fun acc curr -> 
+            let key = to_sorted_string curr in
+            acc |> add key @@ num_perms key acc
+        ) m l
+    
     (* val get_max_perms : int t -> int 
     Returns the key with the highest stored int value *)
     let get_max_perms m = fold (fun k v acc -> if v > acc then v else acc) m 0
