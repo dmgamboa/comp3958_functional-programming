@@ -1,7 +1,7 @@
 include Anneal
 
 (* val read_distances : string -> float array array 
-Takes a file name and reads the data in the file into a matrix *)
+    Takes a file name and reads the data in the file into a matrix *)
 let read_distances f =
     let file = open_in f in
     let rec get_row acc line = 
@@ -17,7 +17,8 @@ let read_distances f =
         | End_of_file -> matrix |> List.rev |> Array.of_list
     in read_distances' 0 []
 
-(* Generates a random number pair (x, y)
+(* val generate_random_pairs : int -> int * int
+    Generates an int tuple (x, y)
     where x != y, and x and y are in range [0, b) *)
 let generate_random_pairs b =
     let rec generate_random_pairs' (x, y) b =
@@ -26,6 +27,8 @@ let generate_random_pairs b =
         else (x, y)
     in generate_random_pairs' (Random.int b, Random.int b) b
 
+(* val swap : 'a list -> 'a -> 'a -> 'a list 
+    Returns a list l with values for a and b swapped *)
 let rec swap l a b =
     match l with
     | [] -> []
@@ -33,10 +36,15 @@ let rec swap l a b =
     | (x::xs) when x = b -> a::(swap xs a b)
     | (x::xs) -> x::(swap xs a b)
 
+(* val next : 'a list -> 'a list 
+    Returns a list with two of randomly chosen elements swapped '*)
 let next s =
     let (x, y) = generate_random_pairs @@ List.length s
     in swap s (List.nth s x) (List.nth s y)
 
+(* val energy : float array array -> int list -> float 
+    Returns the cost of traversing matrix m 
+    given a list of vertices s *)
 let energy m s =
     let rec energy' v s acc =
         match s with
@@ -44,6 +52,10 @@ let energy m s =
         | (x::xs) -> energy' m.(x) xs (acc +. v.(x))
     in energy' m.(0) s 0.
 
+(* val run : string -> float * float * int -> int -> float * int list
+    Runs simulated annealing on a matrix taken from filename f
+    Returns a tuple containing the distance of the approximate shortest path
+    and its associated itinerary *)
 let run f (t0, tf, ti) iterations =
     let distances = read_distances f in
     let s0 = List.init (Array.length distances - 1) (fun x -> x + 1) in
