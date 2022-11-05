@@ -7,8 +7,8 @@ let read_distances f =
     let rec get_row acc line = 
         match line with
         | "" -> acc |> List.rev |> Array.of_list
-        | _ -> Scanf.sscanf line " %d %[^\n]" 
-            @@ fun x s -> get_row ((float_of_int x)::acc) s in
+        | _ -> Scanf.sscanf line " %s %[^\n]" 
+            @@ fun x s -> get_row ((float_of_string x)::acc) s in
     let rec read_distances' rows matrix =
         try
             (get_row [] @@ input_line file)::matrix
@@ -16,13 +16,6 @@ let read_distances f =
         with
         | End_of_file -> matrix |> List.rev |> Array.of_list
     in read_distances' 0 []
-
-let generate_starting_path n =
-    let rec generate_starting_path n l =
-        if (n > 0)
-        then generate_starting_path (n - 1) (n::l)
-        else l
-    in generate_starting_path (n - 1) []
 
 (* Generates a random number pair (x, y)
     where x != y, and x and y are in range [0, b) *)
@@ -53,8 +46,7 @@ let energy m s =
 
 let run f (t0, tf, ti) iterations =
     let distances = read_distances f in
-    let s0 = generate_starting_path (Array.length distances) in
+    let s0 = List.init (Array.length distances - 1) (fun x -> x + 1) in
     let energy' = energy distances in
     let min_path = Anneal.run (s0, energy', next) (t0, tf, ti) iterations
     in ((energy' min_path), min_path)
-    

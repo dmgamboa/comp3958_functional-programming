@@ -10,5 +10,7 @@ let () =
     let tf = 0.99 in
     let ti = (iterations / 500) + 1 in
     let (length, path) = Tsp.run file_name (t0, tf, ti) iterations in
-    Printf.printf("Distance: %.0f\nPath:") length ;
-    List.iter (Printf.printf("%d ")) path ;
+    Printf.printf("Distance: %.0f\n") length ;
+    print_string "Path: 0 " ;
+    List.iter (Printf.printf("-> %d ")) path ;
+    print_endline "-> 0";
