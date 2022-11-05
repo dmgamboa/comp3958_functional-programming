@@ -42,9 +42,10 @@ let next s =
     let (x, y) = generate_random_pairs @@ List.length s
     in swap s (List.nth s x) (List.nth s y)
 
-(* val energy : float array array -> int list -> float 
+(* val energy : float array array -> int list -> float
+    Assuming the path starts and ends at vertex 0,
     Returns the cost of traversing matrix m 
-    given a list of vertices s *)
+    given itinerary of vertices s *)
 let energy m s =
     let rec energy' v s acc =
         match s with
