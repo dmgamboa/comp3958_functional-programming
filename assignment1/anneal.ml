@@ -1,9 +1,9 @@
 (* val run : 'a * ('a -> float) * ('a -> 'a)  -> float * float * int -> int -> 'a *)
 let run (s, energy, next) (t, factor, interval) num_steps =
-	let int_start = (num_steps mod interval) in
+	let int_start = num_steps mod interval + 1 in
 	let prob e e' t = if (e < e')
 		then exp ((e -. e') /. t)
-		else 1. in	
+		else 1. in
 	let rec anneal (s, energy, next) (t, factor, interval) num_steps =
 		match num_steps with
 		| 0 -> s
