@@ -23,8 +23,8 @@ let read_distances f =
 let generate_random_pairs b =
     let rec generate_random_pairs' (x, y) b =
         if (x = y)
-        then generate_random_pairs' (Random.int b, Random.int b) b
-        else (x, y)
+            then generate_random_pairs' (Random.int b, Random.int b) b
+            else (x, y)
     in generate_random_pairs' (Random.int b, Random.int b) b
 
 (* val swap : 'a list -> 'a -> 'a -> 'a list 

@@ -14,6 +14,6 @@ let () =
     (* Print itineraryt o match the solution output format: 
     1. Start / end vertex included
     2. Each vertex labelled as their index + 1 *)
-    print_endline "Path: 1" ;
+    print_endline "Path:\n1" ;
     List.iter (Printf.printf("%d\n")) (path |> List.map (fun x -> x + 1));
     print_endline "1";
