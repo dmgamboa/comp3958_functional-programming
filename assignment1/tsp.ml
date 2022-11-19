@@ -1,5 +1,3 @@
-include Anneal
-
 (* val read_distances : string -> float array array 
     Takes a file name and reads the data in the file into a matrix *)
 let read_distances f =
@@ -14,7 +12,8 @@ let read_distances f =
             (get_row [] @@ input_line file)::matrix
             |> read_distances' (rows + 1)
         with
-        | End_of_file -> matrix |> List.rev |> Array.of_list
+        | End_of_file -> close_in file ;
+            matrix |> List.rev |> Array.of_list
     in read_distances' 0 []
 
 (* val generate_random_pairs : int -> int * int

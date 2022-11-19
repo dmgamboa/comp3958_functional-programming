@@ -1,7 +1,5 @@
 (* GAMBOA, Donna A01207448 *)
 
-include Tsp
-
 let () =
     Random.init 32768 ;
     let file_name = Sys.argv.(1) in
