@@ -1,9 +1,9 @@
-type t                
+module Graph = Map.Make(String)
+
+type t = (string * int) list Graph.t                
 type edge = string * string * int
 
 exception Except of string  (* exception raised by some of the functions *)
-
-module Graph = Map.Make(String)
 
 let inf = max_int    (* special large value returned by weight function *)
 
