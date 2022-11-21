@@ -25,7 +25,7 @@ let min_tree v0 g =
     else 
         let rec min_tree' l t =
             let edges = connected_edges l g in
-            if (edges = Edges.empty) then List.rev t
+            if (edges = Edges.empty) then t
             else
                 let ((_, v, _) as e) = Edges.min_elt edges
                 in min_tree' (v::l) (e::t)
