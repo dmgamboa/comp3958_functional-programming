@@ -1,6 +1,7 @@
 module Graph = Map.Make(String)
 
-type t = (string * int) list Graph.t                
+type t = (string * int) list Graph.t   
+
 type edge = string * string * int
 
 exception Except of string  (* exception raised by some of the functions *)
@@ -18,11 +19,8 @@ let is_vertex v g = List.mem v @@ vertices g
 
 (* returns a list of all edges in a graph *)
 let edges g = 
-    let edges' u l = List.fold_left (fun acc (v, w) -> (u, v, w)::acc) [] l 
-    in Graph.fold (fun k v acc -> (edges' k v) @ acc) g []
-
-(* returns whether an edge is in a graph *)
-let does_edge_exist e g = List.mem e @@ edges g
+    let edges' u ul l = List.fold_left (fun acc (v, w) -> (u, v, w)::acc) l ul
+    in Graph.fold (fun k v acc -> edges' k v acc) g []
 
 (* returns a list of all neighbours of a specified vertex in a graph;
    each pair in the list represents (neighbour_vertex, weight);
@@ -42,9 +40,6 @@ let weight u v g =
     | _::xs -> weight' xs
 in weight' (neighbours v g)
 
-(* returns whether the vertex is in a list of edges *)
-let has_conflicting_edge v l = List.exists (fun (v',_) -> v = v') l
-
 (* adds an edge to a graph
    * raises an exception when a conflicting edge is being added e.g. 
      empty |> add_edge ("A", "B", 1) |> add_edge ("B", "A", 2)
@@ -53,17 +48,13 @@ let has_conflicting_edge v l = List.exists (fun (v',_) -> v = v') l
 *)
 let add_edge (u, v, w) g =
     if u = v then raise @@ Except ("Cannot join vertex to itself")
-    else if (does_edge_exist (u, v, w) g) then g
+    else if (weight u v g) <> inf then raise @@ Except ("Conflicting edge")
+    else if (weight u v g) = w then g
     else match ((neighbours u g), (neighbours v g)) with
-    | ([], []) 
-        -> Graph.add u ((v, w)::[]) @@ Graph.add v ((u, w)::[]) g
-    | (l, []) when not (has_conflicting_edge v l)
-        -> Graph.add u ((v, w)::l) @@ Graph.add v ((u, w)::[]) g
-    | ([], l) when not (has_conflicting_edge u l)
-        -> Graph.add u ((v, w)::[]) @@ Graph.add v ((u, w)::l) g
-    | (ul, vl) when not (has_conflicting_edge v ul)
-        -> Graph.add u ((v, w)::ul) @@ Graph.add v ((u, w)::vl) g
-    | _ -> raise @@ Except ("Conflicting edge found")
+    | ([], [])  -> Graph.add u ((v, w)::[]) @@ Graph.add v ((u, w)::[]) g
+    | (l, [])   -> Graph.add u ((v, w)::l)  @@ Graph.add v ((u, w)::[]) g
+    | ([], l)   -> Graph.add u ((v, w)::[]) @@ Graph.add v ((u, w)::l) g
+    | (ul, vl)  -> Graph.add u ((v, w)::ul) @@ Graph.add v ((u, w)::vl) g
 
 (* returns a graph from the specified list of edges; may raise an exception *)
 let of_list l = List.fold_left (fun acc (u, v, w) -> 
