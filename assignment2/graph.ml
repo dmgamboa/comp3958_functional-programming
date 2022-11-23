@@ -48,8 +48,8 @@ in weight' (neighbours v g)
 *)
 let add_edge (u, v, w) g =
     if u = v then raise @@ Except ("Cannot join vertex to itself")
-    else if (weight u v g) <> inf then raise @@ Except ("Conflicting edge")
     else if (weight u v g) = w then g
+    else if (weight u v g) <> inf then raise @@ Except ("Conflicting edge")
     else match ((neighbours u g), (neighbours v g)) with
     | ([], [])  -> Graph.add u ((v, w)::[]) @@ Graph.add v ((u, w)::[]) g
     | (l, [])   -> Graph.add u ((v, w)::l)  @@ Graph.add v ((u, w)::[]) g

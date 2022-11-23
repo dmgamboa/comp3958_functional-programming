@@ -11,13 +11,13 @@ module Edges = Set.Make(Edge)
 (* given a list of vertices l in graph g,
     returns a set of edges where for each edge (u, v, w),
     u is in l, and v is not in l *)
-let connected_edges l g = l 
-    |> List.fold_left (fun acc u ->
+let connected_edges l g = List.fold_left (fun acc u ->
         Graph.neighbours u g 
+        |> List.filter (fun (v, w) -> not (List.mem v l))
         |> List.map (fun (v, w) -> (u, v, w))
         |> Edges.of_list
-        |> Edges.union acc) Edges.empty
-    |> Edges.filter (fun (u, v, w) -> (List.mem u l) && not (List.mem v l))
+        |> Edges.union acc
+    ) Edges.empty l
 
 (* finds the minimum spanning tree of a list using Prim's algorithm *)
 let min_tree v0 g =
@@ -25,8 +25,8 @@ let min_tree v0 g =
     else 
         let rec min_tree' l t =
             let edges = connected_edges l g in
-            if (edges = Edges.empty) then t
-            else
-                let ((_, v, _) as e) = Edges.min_elt edges
-                in min_tree' (v::l) (e::t)
+                if (edges = Edges.empty) then t
+                else
+                    let ((_, v, _) as e) = Edges.min_elt edges
+                    in min_tree' (v::l) (e::t)
         in min_tree' [v0] []
